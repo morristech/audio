@@ -1,0 +1,44 @@
+# Copyright 2013, Qualcomm Innovation Center, Inc.
+#
+#    All rights reserved.
+#    This file is licensed under the 3-clause BSD license in the NOTICE.txt
+#    file for this project. A copy of the 3-clause BSD license is found at:
+#
+#        http://opensource.org/licenses/BSD-3-Clause. 
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the license is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the license for the specific language governing permissions and
+#    limitations under the license.
+
+Import('env')
+
+# Sources
+srcs = env.Glob('*.cc')
+
+# ALAC
+alac_srcs = []
+if(env.has_key('ALAC_BASE')):
+    env.Append(CPPDEFINES = ['WITH_ALAC'])
+    alac_srcs = env.Glob('alac/*.cc')
+    env.Append(CPPFLAGS = ['-Wno-multichar'])
+    env.Append(CPPPATH = ['$ALAC_BASE/codec'])
+    env.Append(LIBPATH = ['$ALAC_BASE/codec']);
+    env.Append(LIBS = ['alac'])
+
+# About/Config
+env.Append(CPPPATH = ['$ABOUT_BASE/inc'])
+about_srcs = ['$ABOUT_BASE/src/AboutService.cc']
+
+# Platform specific sources
+if env['OS'] == 'android':
+    os_srcs = [ f for f in env.Glob(env['OS'] + '/*.cc') ]
+else:
+    os_srcs = [ f for f in env.Glob(env['OS_GROUP'] + '/*.cc') ]
+
+# Static library
+objs = env.Object(srcs) + env.Object(alac_srcs) + env.Object(about_srcs) + env.Object(os_srcs)
+liballjoyn_audio = env.StaticLibrary('alljoyn_audio', objs)
+
+Return ('liballjoyn_audio')

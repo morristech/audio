@@ -1,0 +1,62 @@
+# Copyright 2013, Qualcomm Innovation Center, Inc.
+#
+#    All rights reserved.
+#    This file is licensed under the 3-clause BSD license in the NOTICE.txt
+#    file for this project. A copy of the 3-clause BSD license is found at:
+#
+#        http://opensource.org/licenses/BSD-3-Clause. 
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the license is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the license for the specific language governing permissions and
+#    limitations under the license.
+
+import os
+
+Import('env')
+
+if(not(env.has_key('GTEST_DIR'))):
+    print('GTEST_DIR not specified skipping alljoyn_audio unit test build')
+
+else:
+    gtest_env = env.Clone();
+    gtest_dir = gtest_env['GTEST_DIR']
+    vars = Variables();
+    vars.AddVariables(('GTEST_HOME', '', gtest_dir))
+    vars.Update(gtest_env)
+
+    if gtest_dir == '/usr':
+        gtest_src_base = '%s/src/gtest' % gtest_dir
+    else:
+        gtest_src_base = gtest_dir
+
+    #we compile with no rtti and we are not using exceptions. 
+    gtest_env.Append(CPPDEFINES = ['GTEST_HAS_RTTI=0'])
+    # we replace AllJoyn's include CPPPATH options.  AllJoyn includes stlport that will cause the 
+    # gTest code to not compile as expected at this time
+    gtest_env.Replace(CPPPATH = [ gtest_src_base ])
+    if gtest_dir != '/usr':
+        gtest_env.Append(CPPPATH = [ gtest_env.Dir('$GTEST_DIR/include') ])
+
+    gtest_obj = gtest_env.StaticObject(target = 'gtest-all', source = [ '%s/src/gtest-all.cc' % gtest_src_base ])
+    gtest_env.StaticLibrary(target = 'gtest', source = gtest_obj)
+
+    test_src = env.Glob('*.cc')
+    
+    unittest_env = env.Clone()
+
+    gtest_dir = unittest_env['GTEST_DIR']
+    if gtest_dir != '/usr':
+        unittest_env.Append(CPPPATH = [gtest_dir + '/include'])
+
+    #we compile with no rtti and we are not using exceptions.
+    unittest_env.Append(CPPDEFINES = ['GTEST_HAS_RTTI=0'])
+    #gtest library file is placed on folder above the the object files.
+    unittest_env.Append(LIBPATH = ['./'])
+    unittest_env.Prepend(LIBS = ['gtest'])
+
+    obj = unittest_env.Object(test_src);
+
+    unittest_prog = unittest_env.Program('AudioTest', obj)
+    unittest_env.Install('$AUDIO_TESTDIR/bin', unittest_prog)
