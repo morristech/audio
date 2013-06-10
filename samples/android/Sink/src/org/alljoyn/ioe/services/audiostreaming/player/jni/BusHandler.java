@@ -37,7 +37,7 @@ public class BusHandler extends Handler {
 	 * Native JNI methods
 	 */
 	static {
-		System.loadLibrary("alljoyn_audio_service");
+		System.loadLibrary("AllJoynAudioSink");
 	}
 
 	/**  */

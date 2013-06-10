@@ -30,7 +30,7 @@
 class MyAllJoynCode {
   public:
     MyAllJoynCode()
-        : listener(NULL), mBusAttachment(NULL), mStreamObj(NULL) { };
+        : listener(NULL), mBusAttachment(NULL), mAboutProps(NULL), mStreamObj(NULL) { };
 
     ~MyAllJoynCode() {
         shutdown();
@@ -47,8 +47,9 @@ class MyAllJoynCode {
     MyAllJoynListeners* listener;
     BusAttachment* mBusAttachment;
     qcc::String mAdvertisedName;
-    services::StreamObject*mStreamObj;
-    services::AudioDevice*mAudioDevice;
+    services::PropertyStore* mAboutProps;
+    services::StreamObject* mStreamObj;
+    services::AudioDevice* mAudioDevice;
 };
 
 #endif //_MY_ALLJOYN_CODE_
