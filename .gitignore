@@ -2,4 +2,6 @@
 *.so
 *.a
 bin/
-
+.sconsign.dblite
+build/
+docs/html/
