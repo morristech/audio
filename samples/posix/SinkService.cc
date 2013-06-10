@@ -33,16 +33,13 @@ using namespace qcc;
 
 class AboutStore : public PropertyStore {
   public:
-    AboutStore(const char* appId, const char* friendlyName) {
-        mAppId = strdup(appId);
+    AboutStore(const char* friendlyName) {
         struct utsname utsname;
         uname(&utsname);
         mDeviceId = strdup(utsname.nodename);
         mFriendlyName = strdup(friendlyName);
     }
     ~AboutStore() {
-        if (mAppId != NULL)
-            free((void*)mAppId);
         if (mDeviceId != NULL)
             free((void*)mDeviceId);
         if (mFriendlyName != NULL)
@@ -82,7 +79,6 @@ class AboutStore : public PropertyStore {
         return ER_OK;
     }
   private:
-    const char* mAppId;
     const char* mDeviceId;
     const char* mFriendlyName;
 };
@@ -205,7 +201,7 @@ int main(int argc, char** argv, char** envArg) {
 #elif defined(QCC_OS_GROUP_POSIX)
         audioDevice = new ALSADevice();
 #endif
-        aboutProps = new AboutStore(argv[0], friendlyName);
+        aboutProps = new AboutStore(friendlyName);
         streamObj = new StreamObject(msgBus, "/Speaker/In", audioDevice, sessionPort, aboutProps);
         status = streamObj->Register(msgBus);
         if (status != ER_OK)
