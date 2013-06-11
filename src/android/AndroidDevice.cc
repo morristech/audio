@@ -283,8 +283,16 @@ bool AndroidDevice::SetMute(bool mute)
 }
 
 bool AndroidDevice::GetVolumeRange(int16_t& low, int16_t& high, int16_t& step) {
-    // TODO
-    return false;
+	SLresult result;
+	bool ret = false;
+    result = (*mVolume)->GetMaxVolumeLevel(mVolume, &high);
+    if (SL_RESULT_SUCCESS == result) {
+		ret = true;
+    }
+	low = -10000;
+	step = 50;
+	
+    return ret;
 }
 
 
@@ -295,7 +303,7 @@ bool AndroidDevice::GetVolume(int16_t& volume)
     SLmillibel mCurrentVolume;
     SLresult result = (*mVolume)->GetVolumeLevel(mVolume, &mCurrentVolume);
     if (SL_RESULT_SUCCESS == result) {
-        volume = mCurrentVolume / -50;
+        volume = mCurrentVolume;
         return true;
     }
     return false;
@@ -307,9 +315,8 @@ bool AndroidDevice::SetVolume(int16_t newVolume)
         return false;
     SLresult result;
     SLmillibel mCurrentVolume;
-    SLmillibel mNewVolume = newVolume * -50;
+    SLmillibel mNewVolume = newVolume;
     result = (*mVolume)->SetVolumeLevel(mVolume, mNewVolume);
-    result = (*mVolume)->GetVolumeLevel(mVolume, &mCurrentVolume);
     if (SL_RESULT_SUCCESS == result) {
         return true;
     }
