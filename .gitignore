@@ -5,3 +5,4 @@ bin/
 .sconsign.dblite
 build/
 docs/html/
+*~
