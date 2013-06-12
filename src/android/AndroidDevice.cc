@@ -283,15 +283,15 @@ bool AndroidDevice::SetMute(bool mute)
 }
 
 bool AndroidDevice::GetVolumeRange(int16_t& low, int16_t& high, int16_t& step) {
-	SLresult result;
-	bool ret = false;
+    SLresult result;
+    bool ret = false;
     result = (*mVolume)->GetMaxVolumeLevel(mVolume, &high);
     if (SL_RESULT_SUCCESS == result) {
-		ret = true;
+        ret = true;
     }
-	low = -10000;
-	step = 50;
-	
+    low = -10000;
+    step = 50;
+
     return ret;
 }
 
