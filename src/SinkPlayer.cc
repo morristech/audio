@@ -1335,7 +1335,7 @@ ThreadReturn SinkPlayer::SinkListenerThread(void* arg) {
                     sp->mSinkListenersMutex.Unlock();
 
                 } else if (strcmp("VolumeChanged", msg->GetMemberName()) == 0) {
-                    uint8_t volume;
+                    int16_t volume;
                     QStatus status = msg->GetArg(0)->Get("n", &volume);
                     if (ER_OK != status) {
                         QCC_LogError(status, ("VolumeChanged signal has invalid argument"));
