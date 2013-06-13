@@ -314,7 +314,6 @@ bool AndroidDevice::SetVolume(int16_t newVolume)
     if (!mVolume)
         return false;
     SLresult result;
-    SLmillibel mCurrentVolume;
     SLmillibel mNewVolume = newVolume;
     result = (*mVolume)->SetVolumeLevel(mVolume, mNewVolume);
     if (SL_RESULT_SUCCESS == result) {
