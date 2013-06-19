@@ -125,7 +125,7 @@ void MyAllJoynCode::initialize(const char* packageName) {
         }
 
         mAboutProps = new AboutStore("AndroidDevice");
-        mStreamObj = new StreamObject(mBusAttachment, "/org/example/Speaker/In", mAudioDevice,
+        mStreamObj = new StreamObject(mBusAttachment, "/Speaker/In", mAudioDevice,
                                       port, mAboutProps);
         //mBusAttachment->RegisterBusObject(*mStreamObj);
         mStreamObj->Register(mBusAttachment);
