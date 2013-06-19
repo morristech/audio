@@ -270,7 +270,7 @@ bool AndroidDevice::GetMute(bool& mute)
         return false;
     SLboolean value;
     SLresult result = (*mVolume)->GetMute(mVolume, &value);
-	mMute = value == SL_BOOLEAN_TRUE;
+    mMute = value == SL_BOOLEAN_TRUE;
     mute = mMute;
     return result == SL_RESULT_SUCCESS;
 }
@@ -280,16 +280,16 @@ bool AndroidDevice::SetMute(bool mute)
     if (!mVolume)
         return false;
     SLresult result = (*mVolume)->SetMute(mVolume, mute ? SL_BOOLEAN_TRUE : SL_BOOLEAN_FALSE);
-	if(result == SL_RESULT_SUCCESS) {
-		mListenersMutex.Lock();
-		AndroidDevice::Listeners::iterator it = mListeners.begin();
-		while (it != mListeners.end()) {
-			AudioDeviceListener* listener = *it;
-			listener->MuteChanged(mute);
-			it = mListeners.upper_bound(listener);
-		}
-		mListenersMutex.Unlock();
-	}
+    if (result == SL_RESULT_SUCCESS) {
+        mListenersMutex.Lock();
+        AndroidDevice::Listeners::iterator it = mListeners.begin();
+        while (it != mListeners.end()) {
+            AudioDeviceListener* listener = *it;
+            listener->MuteChanged(mute);
+            it = mListeners.upper_bound(listener);
+        }
+        mListenersMutex.Unlock();
+    }
     return result == SL_RESULT_SUCCESS;
 }
 
@@ -326,12 +326,12 @@ bool AndroidDevice::SetVolume(int16_t newVolume)
         return false;
     SLresult result;
     SLmillibel mNewVolume = newVolume;
-	int16_t oldVolume = 0;
-	GetVolume(oldVolume);
-	result = (*mVolume)->SetVolumeLevel(mVolume, mNewVolume);
+    int16_t oldVolume = 0;
+    GetVolume(oldVolume);
+    result = (*mVolume)->SetVolumeLevel(mVolume, mNewVolume);
     if (SL_RESULT_SUCCESS == result) {
-		if(oldVolume != newVolume) {
-			mListenersMutex.Lock();
+        if (oldVolume != newVolume) {
+            mListenersMutex.Lock();
             AndroidDevice::Listeners::iterator it = mListeners.begin();
             while (it != mListeners.end()) {
                 AudioDeviceListener* listener = *it;
@@ -339,7 +339,7 @@ bool AndroidDevice::SetVolume(int16_t newVolume)
                 it = mListeners.upper_bound(listener);
             }
             mListenersMutex.Unlock();
-		}	
+        }
         return true;
     }
     return false;

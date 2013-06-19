@@ -37,10 +37,10 @@
 #include <SLES/OpenSLES_Android.h>
 
 struct MyAudioDataBuffer {
-	MyAudioDataBuffer() : next(NULL) {};
-	uint8_t *buffer;
-	uint32_t bufferSize;
-	MyAudioDataBuffer* next;
+    MyAudioDataBuffer() : next(NULL) { };
+    uint8_t*buffer;
+    uint32_t bufferSize;
+    MyAudioDataBuffer* next;
 };
 
 /* Explicitly requesting SL_IID_ANDROIDSIMPLEBUFFERQUEUE and SL_IID_PREFETCHSTATUS
@@ -52,80 +52,80 @@ struct MyAudioDataBuffer {
 #define NB_BUFFERS_IN_QUEUE 4
 /* Size of each buffer in the queue */
 #define BUFFER_SIZE_IN_SAMPLES 1152 // number of samples per MP3 frame
-#define BUFFER_SIZE_IN_BYTES   (2*BUFFER_SIZE_IN_SAMPLES)
+#define BUFFER_SIZE_IN_BYTES   (2 * BUFFER_SIZE_IN_SAMPLES)
 
-class AndroidJellyBeanFileDataSource: public DataSource {
-public:
-	AndroidJellyBeanFileDataSource();
+class AndroidJellyBeanFileDataSource : public DataSource {
+  public:
+    AndroidJellyBeanFileDataSource();
 
-	bool setFilePath(const char *filePath);
+    bool setFilePath(const char*filePath);
 
-	virtual ~AndroidJellyBeanFileDataSource();
+    virtual ~AndroidJellyBeanFileDataSource();
 
-	AudioFormat* getAudioFormat();
-	uint32_t getInputSize();
-	size_t ReadData(uint8_t* buffer, size_t offset, size_t length);
-private:
-	bool getAudioFormat(AudioFormat* desc);
-	bool getAudioDataStart(uint32_t* dataPos, uint32_t* dataSize);
+    AudioFormat* getAudioFormat();
+    uint32_t getInputSize();
+    size_t ReadData(uint8_t* buffer, size_t offset, size_t length);
+  private:
+    bool getAudioFormat(AudioFormat* desc);
+    bool getAudioDataStart(uint32_t* dataPos, uint32_t* dataSize);
 
-	void Configure(const char* path);
+    void Configure(const char* path);
 
-	static qcc::ThreadReturn DecodeDataThread(void *arg);
+    static qcc::ThreadReturn DecodeDataThread(void*arg);
 
-public:
-	AudioFormat mInputFormat;
-	uint32_t mInputSize;
-	uint32_t mInputDataStart;
-	qcc::Mutex mInputFileMutex;
-	FILE* mInputFile;
+  public:
+    AudioFormat mInputFormat;
+    uint32_t mInputSize;
+    uint32_t mInputDataStart;
+    qcc::Mutex mInputFileMutex;
+    FILE* mInputFile;
 
-	//Need circular buffer!
-	MyAudioDataBuffer *pHead;
-	MyAudioDataBuffer *pTail;
-	/* Local storage for decoded audio data */
-	int8_t pcmData[NB_BUFFERS_IN_QUEUE * BUFFER_SIZE_IN_BYTES];
+    //Need circular buffer!
+    MyAudioDataBuffer*pHead;
+    MyAudioDataBuffer*pTail;
+    /* Local storage for decoded audio data */
+    int8_t pcmData[NB_BUFFERS_IN_QUEUE * BUFFER_SIZE_IN_BYTES];
 
-	/* Used to signal prefetching failures */
-	bool prefetchError;
-	/* metadata key index for the PCM format information we want to retrieve */
-	int channelCountKeyIndex;
-	int sampleRateKeyIndex;
-	/* size of the struct to retrieve the PCM format metadata values: the values we're interested in
-	 * are SLuint32, but it is saved in the data field of a SLMetadataInfo, hence the larger size.
-	 * Nate that this size is queried and displayed at l.452 for demonstration/test purposes.
-	 *  */
-	#define PCM_METADATA_VALUE_SIZE 32
-	/* used to query metadata values */
-	SLMetadataInfo *pcmMetaData;
-	/* we only want to query / display the PCM format once */
-	bool formatQueried;
+    /* Used to signal prefetching failures */
+    bool prefetchError;
+    /* metadata key index for the PCM format information we want to retrieve */
+    int channelCountKeyIndex;
+    int sampleRateKeyIndex;
+    /* size of the struct to retrieve the PCM format metadata values: the values we're interested in
+     * are SLuint32, but it is saved in the data field of a SLMetadataInfo, hence the larger size.
+     * Nate that this size is queried and displayed at l.452 for demonstration/test purposes.
+     *  */
+        #define PCM_METADATA_VALUE_SIZE 32
+    /* used to query metadata values */
+    SLMetadataInfo*pcmMetaData;
+    /* we only want to query / display the PCM format once */
+    bool formatQueried;
 
 
-	SLObjectItf sl;
-	SLEngineItf EngineItf;
+    SLObjectItf sl;
+    SLEngineItf EngineItf;
 
-	/* Objects this application uses: one audio player */
-	SLObjectItf  player;
+    /* Objects this application uses: one audio player */
+    SLObjectItf player;
 
-	/* Interfaces for the audio player */
-	SLAndroidSimpleBufferQueueItf decBuffQueueItf;
-	SLPrefetchStatusItf           prefetchItf;
-	SLPlayItf                     playItf;
-	SLMetadataExtractionItf       mdExtrItf;
+    /* Interfaces for the audio player */
+    SLAndroidSimpleBufferQueueItf decBuffQueueItf;
+    SLPrefetchStatusItf prefetchItf;
+    SLPlayItf playItf;
+    SLMetadataExtractionItf mdExtrItf;
 
-	/* Source of audio data for the decoding */
-	SLDataSource      decSource;
-	SLDataLocator_URI decUri;
-	SLDataFormat_MIME decMime;
+    /* Source of audio data for the decoding */
+    SLDataSource decSource;
+    SLDataLocator_URI decUri;
+    SLDataFormat_MIME decMime;
 
-	/* Data sink for decoded audio */
-	SLDataSink                decDest;
-	SLDataLocator_AndroidSimpleBufferQueue decBuffQueue;
-	SLDataFormat_PCM          pcm;
+    /* Data sink for decoded audio */
+    SLDataSink decDest;
+    SLDataLocator_AndroidSimpleBufferQueue decBuffQueue;
+    SLDataFormat_PCM pcm;
 
-	SLboolean required[NUM_EXPLICIT_INTERFACES_FOR_PLAYER];
-	SLInterfaceID iidArray[NUM_EXPLICIT_INTERFACES_FOR_PLAYER];
+    SLboolean required[NUM_EXPLICIT_INTERFACES_FOR_PLAYER];
+    SLInterfaceID iidArray[NUM_EXPLICIT_INTERFACES_FOR_PLAYER];
 
 };
 

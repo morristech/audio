@@ -20,28 +20,28 @@
 #include <cstdio>
 
 void LogHelper_Android::LogString(const char* logMsg, ...) {
-	va_list args;
-	char theMsg[1000];
-	va_start(args, logMsg);
-	vsprintf(theMsg, logMsg, args);
-	va_end(args);
+    va_list args;
+    char theMsg[1000];
+    va_start(args, logMsg);
+    vsprintf(theMsg, logMsg, args);
+    va_end(args);
 
-	JNIEnv* env;
-	jint jret = vm->GetEnv((void**)&env, JNI_VERSION_1_2);
-	if (JNI_EDETACHED == jret) {
-	    vm->AttachCurrentThread(&env, NULL);
-	}
+    JNIEnv* env;
+    jint jret = vm->GetEnv((void**)&env, JNI_VERSION_1_2);
+    if (JNI_EDETACHED == jret) {
+        vm->AttachCurrentThread(&env, NULL);
+    }
 
-	jclass jcls = env->GetObjectClass(jobj);
-	jmethodID mid = env->GetMethodID(jcls, "LogToUI", "(Ljava/lang/String;)V");
-	if (mid == 0) {
-		LOGE("Failed to get Java LogToUI");
-	} else {
-		jstring jMsg = env->NewStringUTF(theMsg);
-		env->CallVoidMethod(jobj, mid, jMsg);
-		env->DeleteLocalRef(jMsg);
-	}
-	if (JNI_EDETACHED == jret) {
-		vm->DetachCurrentThread();
-	}
+    jclass jcls = env->GetObjectClass(jobj);
+    jmethodID mid = env->GetMethodID(jcls, "LogToUI", "(Ljava/lang/String;)V");
+    if (mid == 0) {
+        LOGE("Failed to get Java LogToUI");
+    } else {
+        jstring jMsg = env->NewStringUTF(theMsg);
+        env->CallVoidMethod(jobj, mid, jMsg);
+        env->DeleteLocalRef(jMsg);
+    }
+    if (JNI_EDETACHED == jret) {
+        vm->DetachCurrentThread();
+    }
 }

@@ -51,6 +51,7 @@ env.VariantDir('$OBJDIR/test', 'test', duplicate = 0)
 
 # Header file includes
 env.Append(CPPPATH = [env.Dir('inc')])
+env.Install('$AUDIO_DISTDIR/inc/alljoyn', 'inc/alljoyn/audio')
 
 # Audio streaming libraries
 libs = env.SConscript('$OBJDIR/SConscript')

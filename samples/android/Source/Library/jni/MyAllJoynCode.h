@@ -28,67 +28,67 @@
 #define _MY_ALLJOYN_CODE_
 
 class MyAllJoynCode : public ajn::services::SinkSearcher, public ajn::services::SinkListener  {
-public:
-	MyAllJoynCode(LogHelper* logger, JavaVM* vm, jobject jobj) : vm(vm), jobj(jobj),
-		logger(logger), mBusAttachment(NULL), mSinkPlayer(NULL), mCurrentDataSource(NULL), isMuted(false)  {};
+  public:
+    MyAllJoynCode(LogHelper* logger, JavaVM* vm, jobject jobj) : vm(vm), jobj(jobj),
+        logger(logger), mBusAttachment(NULL), mSinkPlayer(NULL), mCurrentDataSource(NULL), isMuted(false)  { };
 
-	~MyAllJoynCode() {
-		Release();
-		if(logger)
-			delete logger;
-		logger = NULL;
-		if(mSinkPlayer)
-			delete mSinkPlayer;
-		mSinkPlayer = NULL;
-	};
+    ~MyAllJoynCode() {
+        Release();
+        if (logger)
+            delete logger;
+        logger = NULL;
+        if (mSinkPlayer)
+            delete mSinkPlayer;
+        mSinkPlayer = NULL;
+    };
 
-	void Prepare(const char* packageName);
+    void Prepare(const char* packageName);
 
-	void SetDataSource(const char* dataSource);
+    void SetDataSource(const char* dataSource);
 
-	void AddSink(const char *name, const char *path, uint16_t port);
+    void AddSink(const char*name, const char*path, uint16_t port);
 
-	void RemoveSink(const char *name);
+    void RemoveSink(const char*name);
 
-	void Start();
+    void Start();
 
-	void Pause();
+    void Pause();
 
-	void Stop();
+    void Stop();
 
-	void ChangeVolume(float value);
+    void ChangeVolume(float value);
 
-	void Mute();
+    void Mute();
 
-	void Release();
+    void Release();
 
-	/* SinkSearcher */
-	virtual void SinkFound( Service *sink );
+    /* SinkSearcher */
+    virtual void SinkFound(Service*sink);
 
-	virtual void SinkLost( Service *sink );
+    virtual void SinkLost(Service*sink);
 
-	/* SinkListener */
-    void SinkAdded( const char *name );
+    /* SinkListener */
+    void SinkAdded(const char*name);
 
-    void SinkAddFailed( const char *name );
+    void SinkAddFailed(const char*name);
 
-    void SinkRemoved( const char *name, bool lost );
+    void SinkRemoved(const char*name, bool lost);
 
-private:
+  private:
     void SetDataSourceHelper(const char* dataSource);
 
-private:
+  private:
     JavaVM* vm;
-	jobject jobj;
-	LogHelper* logger;
-	char * mDataSourcePath;
-	/* Static data */
-	qcc::String wellKnownName;
-	ajn::BusAttachment* mBusAttachment;
-	ajn::services::SinkPlayer* mSinkPlayer;
-	ajn::services::DataSource* mCurrentDataSource;
-	std::list<qcc::String> mSinkNames;
-	bool isMuted;
+    jobject jobj;
+    LogHelper* logger;
+    char* mDataSourcePath;
+    /* Static data */
+    qcc::String wellKnownName;
+    ajn::BusAttachment* mBusAttachment;
+    ajn::services::SinkPlayer* mSinkPlayer;
+    ajn::services::DataSource* mCurrentDataSource;
+    std::list<qcc::String> mSinkNames;
+    bool isMuted;
 };
 
 #endif //_MY_ALLJOYN_CODE_
