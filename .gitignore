@@ -6,3 +6,8 @@ bin/
 build/
 docs/html/
 *~
+local.properties
+build.xml
+gen/
+obj/
+proguard-project.txt
