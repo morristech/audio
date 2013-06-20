@@ -457,8 +457,7 @@ void AudioSinkObject::AudioDataSignalHandler(const InterfaceDescription::Member*
     const uint64_t timestamp = args[0].v_uint64;
     uint64_t now = mStream->GetCurrentTimeNanos();
     if (timestamp < now) {
-        uint64_t diff = now - timestamp;
-        QCC_LogError(ER_WARNING, ("Dropping received Audio Data as it's out of date by %" PRIu64 " nanos", diff));
+        QCC_LogError(ER_WARNING, ("Dropping received Audio Data as it's out of date by %" PRIu64 " nanos", now - timestamp));
         EmitFifoPositionChangedSignal();
         mLateChunkCount++;
         return;
@@ -643,6 +642,7 @@ ThreadReturn AudioSinkObject::AudioOutputThread(void* arg) {
             buffer = (uint8_t*)calloc(bufferSize, 1);
         }
 
+#ifndef NDEBUG
         uint64_t delay = 0;
         uint32_t delayInFrames = apo->mAudioDevice->GetDelay();
         if (delayInFrames > 0) {
@@ -650,8 +650,9 @@ ThreadReturn AudioSinkObject::AudioOutputThread(void* arg) {
             delay = (uint64_t)(((double)delayInBytes / apo->mBytesPerSecond) * 1000000000);
         }
 
-        int64_t diffNanos = (apo->mStream->GetCurrentTimeNanos() + delay) - ts.timestamp;
-        QCC_DbgHLPrintf(("Difference between requested and expected chunk time: %" PRId64 " nanos", diffNanos));
+        QCC_DbgHLPrintf(("Difference between requested and expected chunk time: %" PRId64 " nanos",
+                         (apo->mStream->GetCurrentTimeNanos() + delay) - ts.timestamp));
+#endif
 
         if (ts.dataSize < sizeToRead)
             sizeToRead = ts.dataSize;

@@ -104,9 +104,7 @@ void ImageSinkObject::ImageDataSignalHandler(const InterfaceDescription::Member*
         return;
     }
 
-    //const uint8_t *data = args[0].v_scalarArray.v_byte;
-    const size_t dataSize = args[0].v_scalarArray.numElements;
-    QCC_DbgHLPrintf(("Received %zu bytes of image data", dataSize));
+    QCC_DbgHLPrintf(("Received %zu bytes of image data", args[0].v_scalarArray.numElements));
 }
 
 }

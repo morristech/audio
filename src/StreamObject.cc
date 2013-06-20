@@ -198,7 +198,7 @@ void StreamObject::Open(const InterfaceDescription::Member* member, Message& msg
     for (std::vector<PortObject*>::iterator it = mPorts.begin(); it != mPorts.end(); ++it) {
         PortObject* p = *it;
         if (mOwner != NULL) {
-            QCC_DbgHLPrintf(("Unregistering existing ports owned by \"%s\""));
+            QCC_DbgHLPrintf(("Unregistering existing ports owned by \"%s\"", mOwner));
             p->EmitOwnershipLostSignal(msg->GetSender());
         }
         p->Cleanup();

@@ -104,10 +104,9 @@ void MetadataSinkObject::MetadataSignalHandler(const InterfaceDescription::Membe
     if (nElements > 0) {
         const MsgArg* entries = args[0].v_array.GetElements();
         for (size_t i = 0; i < nElements; i++) {
-            MsgArg* v = entries[i].v_dictEntry.val->v_variant.val;
-            if (v->typeId == ALLJOYN_STRING) {
-                const char* name = entries[i].v_dictEntry.key->v_string.str;
-                QCC_DbgHLPrintf(("  %s = %s", name, v->v_string.str));
+            MsgArg* val = entries[i].v_dictEntry.val->v_variant.val;
+            if (val->typeId == ALLJOYN_STRING) {
+                QCC_DbgHLPrintf(("  %s = %s", entries[i].v_dictEntry.key->v_string.str, val->v_string.str));
             }
         }
     }
