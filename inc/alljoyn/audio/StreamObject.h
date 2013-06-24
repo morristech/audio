@@ -26,11 +26,11 @@
 #error Only include StreamObject.h in C++ code.
 #endif
 
+#include <alljoyn/about/AboutService.h>
+#include <alljoyn/about/PropertyStore.h>
 #include <alljoyn/audio/AudioDevice.h>
 #include <alljoyn/BusObject.h>
 #include <qcc/Mutex.h>
-#include "AboutService.h"
-#include "PropertyStore.h"
 
 namespace ajn {
 namespace services {

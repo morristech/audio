@@ -35,7 +35,7 @@ class AboutStore : public ajn::services::PropertyStore {
     }
     QStatus ReadAll(const char* languageTag, PropertyStore::Filter filter, MsgArg& all) {
         if (languageTag && strcmp(languageTag, "en") != 0) {
-            return ER_FAIL; // TODO org.alljoyn.Error.LanguageNotSupported
+            return ER_LANGUAGE_NOT_SUPPORTED;
         }
         if (PropertyStore::WRITE == filter) {
             return ER_NOT_IMPLEMENTED;

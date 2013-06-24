@@ -2,7 +2,7 @@ LOCAL_PATH := $(call my-dir)
 
 # AllJoyn specifics
 ALLJOYN_ROOT := ../../../../..
-ABOUT_ROOT := $(ALLJOYN_ROOT)/services/about_config
+ABOUT_ROOT := $(ALLJOYN_ROOT)/services/about
 ALLJOYN_DIST := $(ALLJOYN_ROOT)/services/audio/build/android/arm/$(VARIANT)/dist
 
 include $(CLEAR_VARS)
