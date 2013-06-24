@@ -349,11 +349,13 @@ TEST_F(VolumeControlTest, SetValidVolume) {
     EXPECT_EQ(OpenStream(stream), ER_OK);
     ProxyBusObject* port = GetRawPort(stream);
     ASSERT_TRUE(port);
+    int16_t low, high;
+    EXPECT_EQ(GetVolumeRange(port, low, high), ER_OK);
     int16_t currentVol;
     EXPECT_EQ(GetVolume(port, currentVol), ER_OK);
 
-    int16_t newVol1 = currentVol + 1;
-    int16_t newVol2 = currentVol - 1;
+    int16_t newVol1 = currentVol < high ? currentVol + 1 : low;
+    int16_t newVol2 = currentVol > low ? currentVol - 1 : high;
     EXPECT_EQ(SetVolume(port, newVol1), ER_OK);
     EXPECT_EQ(WaitForVolumeChanged(AudioTest::sTimeout), ER_OK);
     EXPECT_EQ(GetVolumeChange(), newVol1);
