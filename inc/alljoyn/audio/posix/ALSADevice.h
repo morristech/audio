@@ -58,7 +58,6 @@ class ALSADevice : public AudioDevice {
     void RemoveListener(AudioDeviceListener* listener);
 
   private:
-    bool SetVolumeMax(snd_mixer_elem_t* elem);
     void StartAudioMixerThread();
     void StopAudioMixerThread();
     static qcc::ThreadReturn AudioMixerThread(void* arg);

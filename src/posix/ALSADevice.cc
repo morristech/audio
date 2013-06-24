@@ -185,11 +185,6 @@ bool ALSADevice::Open(const char* format, uint32_t sampleRate, uint32_t numChann
                 QCC_LogError(ER_OS_ERROR, ("get playback Master volume range failed: %s", snd_strerror(err)));
                 mAudioMixerElementMaster = NULL;
                 mAudioMixerElementPCM = NULL;
-            } else {
-                if (mAudioMixerElementPCM != NULL) {
-                    SetVolumeMax(mAudioMixerElementPCM);
-                    mAudioMixerElementPCM = NULL;
-                }
             }
         } else if (mAudioMixerElementPCM != NULL) {
             if ((err = snd_mixer_selem_get_playback_volume_range(mAudioMixerElementPCM, &mMinVolume, &mMaxVolume)) < 0) {
@@ -287,16 +282,6 @@ bool ALSADevice::Write(const uint8_t* buffer, uint32_t bufferSizeInFrames) {
     return err > 0;
 }
 
-bool ALSADevice::SetVolumeMax(snd_mixer_elem_t* elem) {
-    int err;
-    if ((err = snd_mixer_selem_set_playback_volume_all(elem, mMaxVolume)) < 0) {
-        QCC_LogError(ER_OS_ERROR, ("set playback volume all failed: %s", snd_strerror(err)));
-        return false;
-    }
-
-    return true;
-}
-
 bool ALSADevice::GetMute(bool& mute) {
     snd_mixer_elem_t* elem = mAudioMixerElementMaster ? mAudioMixerElementMaster : mAudioMixerElementPCM;
     if (!elem)
@@ -392,11 +377,10 @@ ThreadReturn ALSADevice::AudioMixerThread(void* arg) {
     Thread* selfThread = Thread::GetThread();
     int err;
 
-    if (ad->mAudioMixerElementMaster) {
+    if (ad->mAudioMixerElementMaster != NULL) {
         snd_mixer_elem_set_callback_private(ad->mAudioMixerElementMaster, ad);
         snd_mixer_elem_set_callback(ad->mAudioMixerElementMaster, &AudioMixerEvent);
-    }
-    if (ad->mAudioMixerElementPCM) {
+    } else if (ad->mAudioMixerElementPCM != NULL) {
         snd_mixer_elem_set_callback_private(ad->mAudioMixerElementPCM, ad);
         snd_mixer_elem_set_callback(ad->mAudioMixerElementPCM, &AudioMixerEvent);
     }
@@ -450,6 +434,8 @@ ThreadReturn ALSADevice::AudioMixerThread(void* arg) {
 
 int ALSADevice::AudioMixerEvent(snd_mixer_elem_t* elem, unsigned int mask) {
     ALSADevice* ad = reinterpret_cast<ALSADevice*>(snd_mixer_elem_get_callback_private(elem));
+    if (!ad)
+        return 0;
 
     if (mask == SND_CTL_EVENT_MASK_REMOVE) {
         // Ignore
