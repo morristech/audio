@@ -15,6 +15,7 @@
  ******************************************************************************/
 
 #include <alljoyn/audio/SinkSearcher.h>
+#include <alljoyn/AllJoynStd.h>
 
 #include "Sink.h"
 #include <qcc/Debug.h>
@@ -106,9 +107,44 @@ void SinkSearcher::OnAnnounce(const InterfaceDescription::Member* member, const 
      * Another is to force a refresh by cancelling any finds and re-issuing them.  The found
      * response should occur relative quickly after re-issue if the device is present.  See
      * Refresh below.
+     *
+     * Note also that we have to be careful here when calling FindAdvertisedName.  If it blocks
+     * then we could run out of "concurrency" threads if we get flooded with OnAnnounce calls 
+     * before FindAdvertisedName returns.  Call it asynchronously to avoid this problem.
      */
-    mBus->EnableConcurrentCallbacks();
-    mBus->FindAdvertisedName(serviceName);
+    status = FindAdvertisedNameAsync(serviceName);
+    if (status != ER_OK)
+        QCC_LogError(status, ("Failed to call FindAdvertisedName"));
+}
+
+QStatus SinkSearcher::FindAdvertisedNameAsync(const char* namePrefix) {
+    MsgArg arg("s", namePrefix);
+    const ProxyBusObject& alljoynObj = mBus->GetAllJoynProxyObj();
+    return alljoynObj.MethodCallAsync(org::alljoyn::Bus::InterfaceName, "FindAdvertisedName", 
+                                      this, static_cast<MessageReceiver::ReplyHandler>(&SinkSearcher::FindAdvertisedNameAsyncCB),
+                                      &arg, 1);
+}
+
+void SinkSearcher::FindAdvertisedNameAsyncCB(Message& message, void* context) {
+    QStatus status = ER_FAIL;
+    if (message->GetType() == MESSAGE_METHOD_RET) {
+        uint32_t disposition;
+        status = message->GetArgs("u", &disposition);
+        if (ER_OK == status) {
+            switch (disposition) {
+            case ALLJOYN_FINDADVERTISEDNAME_REPLY_SUCCESS:
+                break;
+
+            default:
+                QCC_LogError(ER_BUS_UNEXPECTED_DISPOSITION, ("%s.FindAdvertisedName returned %d", 
+                                                             org::alljoyn::Bus::InterfaceName, disposition));
+                break;
+            }
+        }
+    } else if (message->GetType() == MESSAGE_ERROR) {
+        QCC_LogError(status, ("%s.FindAdvertisedName returned ERROR_MESSAGE (error=%s)", 
+                              org::alljoyn::Bus::InterfaceName, message->GetErrorDescription().c_str()));
+    }
 }
 
 QStatus SinkSearcher::Register(BusAttachment* bus) {

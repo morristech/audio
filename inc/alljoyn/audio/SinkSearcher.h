@@ -102,6 +102,9 @@ class SinkSearcher : public ajn::BusListener, public ajn::MessageReceiver {
     void LostAdvertisedName(const char* name, ajn::TransportMask transport, const char* namePrefix);
     void OnAnnounce(const ajn::InterfaceDescription::Member* member, const char* srcPath, ajn::Message& message);
 
+    QStatus FindAdvertisedNameAsync(const char* namePrefix);
+    void FindAdvertisedNameAsyncCB(ajn::Message& message, void* context);
+
   private:
     /** The sinks that have been found during the lifetime of this helper. */
     std::map<qcc::String, Service> mServices;
