@@ -5,9 +5,13 @@
 #
 LOCAL_PATH := $(call my-dir)
 
+AUDIO_SERVICE_PATH := /Developer/AllJoyn/mainline/services/audio
+ABOUT_CONFIG_SERVICE_PATH := /Developer/AllJoyn/mainline/services/
+
 # AllJoyn specifics
-ALLJOYN_ROOT := ../../../../../..
-ALLJOYN_DIST := $(ALLJOYN_ROOT)/services/audio/build/android/arm/$(VARIANT)/dist
+#ALLJOYN_DIST := ../../../../../build/android/arm/$(APP_OPTIM)/dist
+#ALLJOYN_DIST := ../..
+ALLJOYN_DIST := /Developer/AllJoyn/alljoyn-3.3.0-android-sdk-rel/cpp
 
 # The CLEAR_VARS variable is provided by the build system and points to a
 # special GNU Makefile that will clear many LOCAL_XXX variables for you
@@ -26,6 +30,7 @@ include $(CLEAR_VARS)
 # 
 LOCAL_MODULE := easy_alljoyn_audio
 
+
 # The TARGET_PLATFORM defines the targetted Android Platform API level
 TARGET_PLATFORM := android-8
 
@@ -43,10 +48,9 @@ TARGET_PLATFORM := android-8
 #
 
 LOCAL_C_INCLUDES := \
-	$(ALLJOYN_DIST)/cpp/inc \
-	$(ALLJOYN_DIST)/audio/inc \
-	$(ALLJOYN_ROOT)/common/inc \
-	$(ALLJOYN_DIST)/cpp/inc/alljoyn \
+	$(ALLJOYN_DIST)/inc \
+	$(AUDIO_SERVICE_PATH)/inc \
+	$(LOCAL_PATH)/about_config/cpp/inc \
 	$(NDK_PLATFORMS_ROOT)/$(TARGET_PLATFORM)/arch-arm/usr/include \
 	$(NDK_ROOT)/sources/cxx-stl/gnu-libstdc++/include \
 	$(NDK_ROOT)/sources/cxx-stl/gnu-libstdc++/libs/armeabi/include \
@@ -66,7 +70,7 @@ LOCAL_CFLAGS := -Wno-psabi -Wno-write-strings -DANDROID_NDK -DTARGET_ANDROID -DL
 # as it is unnecessary because the default extension for C++ source 
 # files is '.cpp'. 
 #
-LOCAL_CPP_EXTENSION := .cc 
+LOCAL_DEFAULT_CPP_EXTENSION := cc 
 
 # The LOCAL_SRC_FILES variables must contain a list of C and/or C++ source
 # files that will be built and assembled into a module. Note that you should
@@ -77,7 +81,13 @@ LOCAL_CPP_EXTENSION := .cc
 LOCAL_SRC_FILES := \
 	AndroidJNIBridge.cc \
 	LogHelper_Android.cc \
-	MyAllJoynCode.cc
+	MyAllJoynCode.cc \
+	src/AudioCodec.cc \
+	src/RawCodec.cc \
+	src/WavDataSource.cc \
+	src/SinkSearcher.cc \
+	src/SinkPlayer.cc \
+	about_config/cpp/src/AboutClient.cc \
 
 # The list of additional linker flags to be used when building your
 # module. This is useful to pass the name of specific system libraries
@@ -95,12 +105,12 @@ LOCAL_SRC_FILES := \
 
 LOCAL_LDLIBS := \
 	-L$(NDK_PLATFORMS_ROOT)/$(TARGET_PLATFORM)/arch-arm/usr/lib \
-	-L$(ALLJOYN_DIST)/cpp/lib \
-	-L$(ALLJOYN_DIST)/audio/lib \
-    -L$(NDK_ROOT)/sources/cxx-stl/gnu-libstdc++/libs/armeabi \
-    -L$(NDK_ROOT)/sources/cxx-stl/gnu-libstdc++/4.6/libs/armeabi \
-    $(ALLJOYN_DIST)/cpp/lib/BundledDaemon.o \
-	-lajdaemon -lalljoyn -llog -lz -ldl -lssl -lcrypto -lm -lc -lstdc++  -lgcc -lgnustl_static -lalljoyn_audio
+	-L$(ALLJOYN_DIST)/lib \
+        -L$(NDK_ROOT)/sources/cxx-stl/gnu-libstdc++/libs/armeabi \
+        -L$(NDK_ROOT)/sources/cxx-stl/gnu-libstdc++/4.6/libs/armeabi \
+	-L./libs \
+    $(ALLJOYN_DIST)/lib/BundledDaemon.o \
+	-lajdaemon -lalljoyn -llog -lz -ldl -lssl -lcrypto -lm -lc -lstdc++  -lgcc -lgnustl_static
 
 # By default, ARM target binaries will be generated in 'thumb' mode, where
 # each instruction are 16-bit wide. You can define this variable to 'arm'

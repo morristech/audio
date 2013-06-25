@@ -1,13 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:screenOrientation="portrait"
-	android:id="@+id/mainWindow" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent" android:background="@drawable/bg" android:paddingRight="5dip" android:paddingLeft="5dip" android:paddingTop="5dip">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:screenOrientation="portrait"
+	android:id="@+id/mainWindow" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent" android:background="@drawable/bg" android:paddingRight="5dip" android:paddingLeft="5dip">
+	
+    <TextView android:id="@+id/instructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:text="Instructions:\nSelect a song below (.wav files shown).\nNext, touch controls to play locally.\nSelect 'Pick Sink' to enable other sinks.\nVolume up/down buttons control sinks.\n'Mute All Sinks' will mute every sink.\n"
+        />
+    
+    <TextView android:id="@+id/songHeader"
+        android:layout_below="@+id/instructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="22dp"
+        android:textStyle="bold"
+        android:text="Songs:"
+        />
+        
+    <ListView android:id="@+id/songList"
+		android:layout_width="fill_parent" 
+		android:layout_height="fill_parent"
+		android:layout_weight="1.0" 
+		android:layout_below="@+id/songHeader"
+		android:layout_above="@+id/controls"
+		/>
+	
 	<RelativeLayout android:layout_height="wrap_content"
-	    android:background="@drawable/blue_bg"
-	    android:layout_width="fill_parent">
-	    
-			<!-- RelativeLayout android:layout_width="fill_parent" android:layout_height="44px" android:layout_below="@+id/relativeLayout1" android:id="@+id/progressContainer">
-				<SeekBar android:paddingRight="5dip" android:layout_height="44px" android:layout_width="fill_parent" android:id="@+id/progressBar" android:paddingLeft="5dip"></SeekBar>
-			</RelativeLayout-->
+	    android:background="@drawable/blue_bg" android:id="@+id/controls"
+	    android:layout_width="fill_parent" android:layout_alignParentBottom="true">
 		
 				<RelativeLayout android:layout_height="wrap_content" android:layout_width="wrap_content"
 					android:layout_gravity="center_horizontal" android:layout_marginTop="2px"
@@ -33,7 +54,7 @@
 							<Button android:layout_width="match_parent" android:text="Pick Sink" android:layout_height="wrap_content" android:id="@+id/pickSink"
 							    android:layout_gravity="center"
 							    android:layout_alignParentTop="true"></Button>
-							<Button android:layout_width="match_parent" android:text="Mute All Speakers" android:layout_height="wrap_content" android:id="@+id/muteAll"
+							<Button android:layout_width="match_parent" android:text="Mute All Sinks" android:layout_height="wrap_content" android:id="@+id/muteAll"
 							    android:layout_gravity="center"
 							    android:layout_below="@+id/pickSink"></Button>
 						</RelativeLayout>
@@ -41,13 +62,6 @@
 			</RelativeLayout>
 			
 	</RelativeLayout>
-	<LinearLayout
-	    android:layout_height="fill_parent" android:orientation="vertical" android:layout_width="fill_parent">
-	    <ListView android:id="@+id/songList"
-			android:layout_width="fill_parent" 
-			android:layout_height="fill_parent"
-			android:layout_weight="1.0" 
-			/>
-	</LinearLayout>
+
 	
-</LinearLayout>
+</RelativeLayout>

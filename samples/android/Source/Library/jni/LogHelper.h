@@ -18,12 +18,12 @@
 #define _LOG_HELPER_
 
 class LogHelper {
-  public:
-    LogHelper() { };
+public:
+	LogHelper() {};
 
-    virtual ~LogHelper() { };
+	virtual ~LogHelper() {};
 
-    virtual void LogString(const char* logMsg, ...) = 0;
+	virtual void LogString(const char* logMsg, ...) = 0;
 };
 
 #endif //_LOG_HELPER_

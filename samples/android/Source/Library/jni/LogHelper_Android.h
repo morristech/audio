@@ -22,18 +22,18 @@
 #define _LOG_HELPER_ANDROID_
 
 class LogHelper_Android : public LogHelper {
-  public:
-    LogHelper_Android(JavaVM* vm, jobject jobj) : vm(vm), jobj(jobj) { };
+public:
+	LogHelper_Android(JavaVM* vm, jobject jobj) : vm(vm), jobj(jobj) {};
 
-    ~LogHelper_Android() {
-        vm = NULL;
-    }
+	~LogHelper_Android() {
+		vm = NULL;
+	}
 
-    void LogString(const char* logMsg, ...);
+	void LogString(const char* logMsg, ...);
 
-  private:
-    JavaVM* vm;
-    jobject jobj;
+private:
+	JavaVM* vm;
+	jobject jobj;
 };
 
 #endif //_LOG_HELPER_ANDROID_
