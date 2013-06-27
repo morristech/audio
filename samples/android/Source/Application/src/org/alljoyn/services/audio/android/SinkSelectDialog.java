@@ -52,24 +52,27 @@ public class SinkSelectDialog extends DialogFragment {
 		mSinkListAdapter.remove(speakerName);
 	}
 	
+	static int x = 0;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		View view = inflater.inflate(R.layout.selectspeakerdialog, container);
 		ListView speakerList = (ListView) view.findViewById(R.id.speakerList);
     	speakerList.setAdapter(mSinkListAdapter);
-//    	speakerList.setOnItemClickListener(new OnItemClickListener() {
-//			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//				((SinkSelectDialogListener) getActivity()).onFinishSinkSelectDialog(mSinkListAdapter.getName(position),
-//						mSinkListAdapter.getPath(position), mSinkListAdapter.getPort(position));
-//				mSinkListAdapter.toggleSelected(position);
-//			}
-//	    });
     	Button closeButton = (Button) view.findViewById(R.id.closePopup);
     	closeButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				getDialog().dismiss();
+			}
+    	});
+    	
+    	Button refreshButton = (Button) view.findViewById(R.id.refreshButton);
+    	refreshButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				mSinkListAdapter.clear();
+				UIHelper.refreshSinks();
 			}
     	});
 		return view;

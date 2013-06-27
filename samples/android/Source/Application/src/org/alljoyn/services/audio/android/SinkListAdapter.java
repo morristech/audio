@@ -23,15 +23,13 @@ import org.alljoyn.services.audio.android.SinkSelectDialog.SinkSelectDialogListe
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.TextView;
 
 public class SinkListAdapter extends ArrayAdapter<Object> {
 
@@ -83,7 +81,7 @@ public class SinkListAdapter extends ArrayAdapter<Object> {
 	public void remove(String name) {
 		int foundLoc = foundLoc(name);
 		if(-1 != foundLoc) {
-			SessionInfoHolder rem = (SessionInfoHolder)mList.remove(foundLoc);
+			mList.remove(foundLoc);
 			if(mActivity != null) {
 				mActivity.runOnUiThread(new Runnable() {
 					public void run() {
@@ -174,7 +172,13 @@ public class SinkListAdapter extends ArrayAdapter<Object> {
 						((CheckBox)arg0).setChecked(false);
 						((SessionInfoHolder)mList.get(loc)).isChecked = false;
 						AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mActivity);
-			    		alertBuilder.setMessage(e.getMessage());
+			    		alertBuilder.setMessage("You must select a song prior to enabling speakers.\nException: "+e.getMessage()+".");
+			    		alertBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface arg0, int arg1) {
+								arg0.dismiss();
+							}
+			    		});
 			    		alertBuilder.create().show();
 					}
 				}

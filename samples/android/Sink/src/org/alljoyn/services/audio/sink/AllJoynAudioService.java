@@ -14,14 +14,14 @@
  *    limitations under the license.
  ******************************************************************************/
 
-package org.alljoyn.ioe.services.audiostreaming.player.jni;
+package org.alljoyn.services.audio.sink;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.HandlerThread;
 import android.os.IBinder;
 
-public class AllJoynAudioStreamingService extends Service{
+public class AllJoynAudioService extends Service{
 	private static final String TAG = "IoEAudioStreamingPlayer";
 	
 	private BusHandler mBusHandler;

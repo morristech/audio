@@ -33,16 +33,16 @@ void MyAllJoynCode::Prepare(const char* packageName) {
 		if (ER_OK == status) {
 			status = mBusAttachment->Start();
 		} else {
-			logger->LogString("BusAttachment::Start failed");
+			LOGD("BusAttachment::Start failed");
 		}
 		/* Connect to the daemon */
 		if (ER_OK == status) {
 			status = mBusAttachment->Connect();
 			if (ER_OK != status) {
-				logger->LogString("BusAttachment Connect failed.");
+				LOGD("BusAttachment Connect failed.");
 			}
 		}
-		logger->LogString("Created BusAttachment and connected");
+		LOGD("Created BusAttachment and connected");
 
 		/* Register the IoE AllJoyn Audio Service Service */
 		mSinkPlayer = new SinkPlayer(mBusAttachment);
@@ -54,29 +54,37 @@ void MyAllJoynCode::Prepare(const char* packageName) {
 
 void MyAllJoynCode::SetDataSource(const char* dataSource)
 {
+	if(mDataSourcePath != NULL)
+		delete mDataSourcePath;
 	mDataSourcePath = strdup(dataSource);
-	SetDataSourceHelper(mDataSourcePath);
+	SetDataSourceHelper();
 }
 
-void MyAllJoynCode::SetDataSourceHelper(const char* dataSource)
+void MyAllJoynCode::SetDataSourceHelper()
 {
-	mDataSourcePath = strdup(dataSource);
-	logger->LogString("Set the Data source to: %s",dataSource);
-	if(mCurrentDataSource != NULL)
-		delete mCurrentDataSource;
-	uint8_t strLenSource = strlen(dataSource);
-	if(strLenSource > 4 && 0 == strncmp(dataSource + strLenSource - 4, ".wav",4)) {
-		mCurrentDataSource = new WavDataSource();
-		((WavDataSource*)mCurrentDataSource)->Open(dataSource);
+	uint8_t strLenSource = strlen(mDataSourcePath);
+	bool isWavFile = strLenSource > 4 && 0 == strncmp(mDataSourcePath + strLenSource - 4, ".wav",4);
+	if(mCurrentDataSource != NULL) {
+		if(isWavFile) {
+			((WavDataSource*)mCurrentDataSource)->Close();
+		}
+	}
+	if(isWavFile) {
+		if(mCurrentDataSource == NULL)
+			mCurrentDataSource = new WavDataSource();
+		((WavDataSource*)mCurrentDataSource)->Open(mDataSourcePath);
 	}
 	if(mCurrentDataSource != NULL) {
 		mSinkPlayer->SetDataSource(mCurrentDataSource);
+		if(wasStopped)
+			mSinkPlayer->OpenAllSinks();
+		wasStopped = false;
 	}
 }
 
 void MyAllJoynCode::AddSink(const char *name, const char *path, uint16_t port)
 {
-	logger->LogString("Name: %s, Path: %s, port:%d", name, path, port);
+	//LOGD("Name: %s, Path: %s, port:%d", name, path, port);
 	if( !mSinkPlayer->HasSink(name) )
 		mSinkPlayer->AddSink(name, port, path);
 }
@@ -89,9 +97,9 @@ void MyAllJoynCode::RemoveSink(const char *name)
 
 void MyAllJoynCode::Start()
 {
-	char buffer[500];
-	sprintf(buffer,"Start!!!\n");
-		logger->LogString(buffer);
+	if(wasStopped)
+		mSinkPlayer->OpenAllSinks();
+	wasStopped = false;
 	if( !mSinkPlayer->IsPlaying() )
 		mSinkPlayer->Play();
 }
@@ -108,11 +116,11 @@ void MyAllJoynCode::Stop()
 	{
 		mSinkPlayer->CloseAllSinks();
 		int8_t strLenSource = strlen(mDataSourcePath);
-			if(strLenSource > 4 && 0 == strncmp(mDataSourcePath + strLenSource - 4, ".wav",4)) {
-				((WavDataSource*)mCurrentDataSource)->Close();
-			}
-		SetDataSourceHelper(mDataSourcePath);
-		mSinkPlayer->OpenAllSinks();
+		if(strLenSource > 4 && 0 == strncmp(mDataSourcePath + strLenSource - 4, ".wav",4)) {
+			((WavDataSource*)mCurrentDataSource)->Close();
+			((WavDataSource*)mCurrentDataSource)->Open(mDataSourcePath);
+		}
+		wasStopped = true;
 	}
 }
 
@@ -134,7 +142,7 @@ void MyAllJoynCode::Mute()
 {
 	isMuted = !isMuted;
 	for (std::list<qcc::String>::iterator it = mSinkNames.begin(); it != mSinkNames.end(); ++it) {
-		logger->LogString("Muting device: %s", it->c_str());
+		LOGD("Muting device: %s", it->c_str());
 		mSinkPlayer->SetMute(it->c_str(), isMuted);
 	}
 }
@@ -157,11 +165,7 @@ void MyAllJoynCode::Release()
 void MyAllJoynCode::SinkFound( Service *sink ) {
 	const char *name = sink->name.c_str();
 	const char *path = sink->path.c_str();
-	char buffer[500];
-	sprintf(buffer, "Found %s objectPath=%s, sessionPort=%d\n", name, path, sink->port);
-	logger->LogString(buffer);
-//	if( !mSinkPlayer->HasSink(name) )
-//		mSinkPlayer->AddSink(name, sink->port, path);
+	LOGD("Found %s objectPath=%s, sessionPort=%d\n", name, path, sink->port);
 	JNIEnv* env;
 	jint jret = vm->GetEnv((void**)&env, JNI_VERSION_1_2);
 	if (JNI_EDETACHED == jret) {
@@ -171,7 +175,7 @@ void MyAllJoynCode::SinkFound( Service *sink ) {
 	jclass jcls = env->GetObjectClass(jobj);
 	jmethodID mid = env->GetMethodID(jcls, "SinkFound", "(Ljava/lang/String;Ljava/lang/String;S)V");
 	if (mid == 0) {
-		logger->LogString("Failed to get Java LogToUI");
+		LOGD("Failed to get Java SinkFound");
 	} else {
 		jstring jName = env->NewStringUTF(name);
 		jstring jPath = env->NewStringUTF(path);
@@ -186,9 +190,7 @@ void MyAllJoynCode::SinkFound( Service *sink ) {
 
 void MyAllJoynCode::SinkLost( Service *sink ) {
 	const char *name = sink->name.c_str();
-	char buffer[300];
-	sprintf(buffer, "Lost %s\n", name);
-	logger->LogString(buffer);
+	LOGD("Lost %s\n", name);
 	JNIEnv* env;
 	jint jret = vm->GetEnv((void**)&env, JNI_VERSION_1_2);
 	if (JNI_EDETACHED == jret) {
@@ -198,7 +200,7 @@ void MyAllJoynCode::SinkLost( Service *sink ) {
 	jclass jcls = env->GetObjectClass(jobj);
 	jmethodID mid = env->GetMethodID(jcls, "SinkLost", "(Ljava/lang/String;)V");
 	if (mid == 0) {
-		logger->LogString("Failed to get Java LogToUI");
+		LOGD("Failed to get Java SinkLost");
 	} else {
 		jstring jName = env->NewStringUTF(name);
 		env->CallVoidMethod(jobj, mid, jName);
@@ -211,13 +213,10 @@ void MyAllJoynCode::SinkLost( Service *sink ) {
 
 void MyAllJoynCode::SinkAdded( const char *name ) {
 	mSinkNames.push_back(name);
-	char buffer[500];
-	sprintf(buffer,"SinkAdded: %s\n", name);
-	logger->LogString(buffer);
-	//mSinkPlayer->Play();
+	LOGD("SinkAdded: %s\n", name);
+
 	mSinkPlayer->OpenSink(name);
-	sprintf(buffer,"SinkOpened: %s\n", name);
-		logger->LogString(buffer);
+	LOGD("SinkOpened: %s\n", name);
 	JNIEnv* env;
 	jint jret = vm->GetEnv((void**)&env, JNI_VERSION_1_2);
 	if (JNI_EDETACHED == jret) {
@@ -227,7 +226,7 @@ void MyAllJoynCode::SinkAdded( const char *name ) {
 	jclass jcls = env->GetObjectClass(jobj);
 	jmethodID mid = env->GetMethodID(jcls, "SinkAdded", "(Ljava/lang/String;)V");
 	if (mid == 0) {
-		logger->LogString("Failed to get Java LogToUI");
+		LOGD("Failed to get Java SinkAdded");
 	} else {
 		jstring jName = env->NewStringUTF(name);
 		env->CallVoidMethod(jobj, mid, jName);
@@ -239,9 +238,7 @@ void MyAllJoynCode::SinkAdded( const char *name ) {
 }
 
 void MyAllJoynCode::SinkAddFailed( const char *name ) {
-	char buffer[500];
-	sprintf(buffer,"SinkAddFailed: %s\n", name);
-	logger->LogString(buffer);
+	LOGD("SinkAddFailed: %s\n", name);
 	JNIEnv* env;
 	jint jret = vm->GetEnv((void**)&env, JNI_VERSION_1_2);
 	if (JNI_EDETACHED == jret) {
@@ -251,7 +248,7 @@ void MyAllJoynCode::SinkAddFailed( const char *name ) {
 	jclass jcls = env->GetObjectClass(jobj);
 	jmethodID mid = env->GetMethodID(jcls, "SinkAddFailed", "(Ljava/lang/String;)V");
 	if (mid == 0) {
-		logger->LogString("Failed to get Java LogToUI");
+		LOGD("Failed to get Java SinkAddFailed");
 	} else {
 		jstring jName = env->NewStringUTF(name);
 		env->CallVoidMethod(jobj, mid, jName);
@@ -264,9 +261,7 @@ void MyAllJoynCode::SinkAddFailed( const char *name ) {
 
 void MyAllJoynCode::SinkRemoved( const char *name, bool lost ) {
 	mSinkNames.remove(qcc::String(name));
-	char buffer[500];
-	sprintf(buffer,"SinkRemoved: %s lost=%d\n", name, lost);
-	logger->LogString(buffer);
+	LOGD("SinkRemoved: %s lost=%d\n", name, lost);
 	JNIEnv* env;
 	jint jret = vm->GetEnv((void**)&env, JNI_VERSION_1_2);
 	if (JNI_EDETACHED == jret) {
@@ -276,7 +271,7 @@ void MyAllJoynCode::SinkRemoved( const char *name, bool lost ) {
 	jclass jcls = env->GetObjectClass(jobj);
 	jmethodID mid = env->GetMethodID(jcls, "SinkRemoved", "(Ljava/lang/String;Z)V");
 	if (mid == 0) {
-		logger->LogString("Failed to get Java LogToUI");
+		LOGD("Failed to get Java SinkRemoved");
 	} else {
 		jstring jName = env->NewStringUTF(name);
 		env->CallVoidMethod(jobj, mid, jName, lost);

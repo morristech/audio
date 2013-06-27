@@ -19,7 +19,6 @@
 #include <alljoyn/DBusStd.h>
 #include <alljoyn/AllJoynStd.h>
 #include "Constants.h"
-#include "LogHelper.h"
 #include <alljoyn/audio/SinkPlayer.h>
 #include <alljoyn/audio/SinkSearcher.h>
 #include <alljoyn/audio/DataSource.h>
@@ -29,14 +28,12 @@
 
 class MyAllJoynCode : public ajn::services::SinkSearcher, public ajn::services::SinkListener  {
 public:
-	MyAllJoynCode(LogHelper* logger, JavaVM* vm, jobject jobj) : vm(vm), jobj(jobj),
-		logger(logger), mBusAttachment(NULL), mSinkPlayer(NULL), mCurrentDataSource(NULL), isMuted(false)  {};
+	MyAllJoynCode(JavaVM* vm, jobject jobj) : vm(vm), jobj(jobj),
+		mBusAttachment(NULL), mSinkPlayer(NULL), mCurrentDataSource(NULL),
+		mDataSourcePath(NULL), isMuted(false), wasStopped(false)  {};
 
 	~MyAllJoynCode() {
 		Release();
-		if(logger)
-			delete logger;
-		logger = NULL;
 		if(mSinkPlayer)
 			delete mSinkPlayer;
 		mSinkPlayer = NULL;
@@ -75,12 +72,11 @@ public:
     void SinkRemoved( const char *name, bool lost );
 
 private:
-    void SetDataSourceHelper(const char* dataSource);
+    void SetDataSourceHelper();
 
 private:
     JavaVM* vm;
 	jobject jobj;
-	LogHelper* logger;
 	char * mDataSourcePath;
 	/* Static data */
 	qcc::String wellKnownName;
@@ -89,6 +85,7 @@ private:
 	ajn::services::DataSource* mCurrentDataSource;
 	std::list<qcc::String> mSinkNames;
 	bool isMuted;
+	bool wasStopped;
 };
 
 #endif //_MY_ALLJOYN_CODE_

@@ -35,7 +35,7 @@ namespace services {
 
 AndroidDevice::AndroidDevice() :
     mMute(false), mVolumeValue(100), mSLEngineObject(NULL), mOutputMixObject(NULL), mBufferQueuePlayerObject(NULL),
-    mBufferQueue(NULL), mNumberOfFrames(0), mBuffersAvailable(2), mBufferIndex(0)
+    mBufferQueue(NULL), mNumberOfFrames(0), mBuffersAvailable(2), mBufferIndex(0), mPlay(NULL)
 {
     mBufferMutex = new qcc::Mutex();
     mAudioBuffers = new uint8_t *[NUM_BUFFERS];
@@ -54,7 +54,6 @@ void AndroidDevice::bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void* con
 
 bool AndroidDevice::Open(const char*format, uint32_t sampleRate, uint32_t numChannels, uint32_t& bufferSize)
 {
-
     SLresult result;
     //Step 1 crate OpenSL audio engine
     result = slCreateEngine(&mSLEngineObject, 0, NULL, 0, NULL, NULL);
@@ -164,6 +163,29 @@ void AndroidDevice::Close()
         (*mBufferQueue)->Clear(mBufferQueue);
         mBuffersAvailable = 2;
         mBufferIndex = 0;
+    }
+
+    if (mPlay) {
+        (*mPlay)->SetPlayState(mPlay, SL_PLAYSTATE_STOPPED);
+        mPlay = NULL;
+    }
+
+    if (mBufferQueuePlayerObject != NULL) {
+        (*mBufferQueuePlayerObject)->Destroy(mBufferQueuePlayerObject);
+        mBufferQueuePlayerObject = NULL;
+        mBufferQueue = NULL;
+        mVolume = NULL;
+    }
+
+    if (mOutputMixObject != NULL) {
+        (*mOutputMixObject)->Destroy(mOutputMixObject);
+        mOutputMixObject = NULL;
+    }
+
+    if (mSLEngineObject != NULL) {
+        (*mSLEngineObject)->Destroy(mSLEngineObject);
+        mSLEngineObject = NULL;
+        mSLEngine = NULL;
     }
 }
 

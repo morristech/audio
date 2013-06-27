@@ -24,6 +24,8 @@
 		android:layout_weight="1.0" 
 		android:layout_below="@+id/songHeader"
 		android:layout_above="@+id/controls"
+		android:choiceMode="singleChoice"
+		android:listSelector="#99555555"
 		/>
 	
 	<RelativeLayout android:layout_height="wrap_content"

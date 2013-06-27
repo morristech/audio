@@ -33,7 +33,7 @@
 typedef signed char byte;
 
 #ifndef LOG_TAG
-#define LOG_TAG  "IoEAudioServiceClient"
+#define LOG_TAG  "AudioServiceSource"
 #endif
 
 /* Missing (from NDK) log macros (use to be in cutils/log.h) */

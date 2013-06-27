@@ -14,7 +14,7 @@
  *    limitations under the license.
  ******************************************************************************/
 
-package org.alljoyn.ioe.services.audiostreaming.player.jni;
+package org.alljoyn.services.audio.sink;
 
 import android.content.Context;
 import android.os.Handler;

@@ -14,10 +14,16 @@
  *    limitations under the license.
  ******************************************************************************/
 
-package org.alljoyn.services.audio.android;
+package org.alljoyn.services.audio.sink;
 
-public class Constants {
-	
-	public static String TAG = "IoEAudioStreamer";
-    
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+
+public class StartOnDeviceBoot extends BroadcastReceiver {
+	@Override
+	public void onReceive(Context context, Intent intent) {
+		Intent i = new Intent(context.getApplicationContext(), AllJoynAudioService.class);
+		context.startService(i);
+	}
 }

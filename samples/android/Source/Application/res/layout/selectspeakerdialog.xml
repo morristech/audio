@@ -15,6 +15,14 @@
 	        android:layout_alignParentTop="true"
 	        android:layout_centerHorizontal="true"
 	        />
+	    <Button
+	        android:id="@+id/refreshButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerHorizontal="true"
+	        android:layout_below="@+id/selectText"
+	        android:text="Refresh list"
+	        />
 	    <ListView 
 	        android:id="@+id/speakerList"           
 	        android:layout_width="wrap_content"
@@ -24,7 +32,7 @@
 	        android:layout_marginBottom="5dp"
 	        android:layout_marginLeft="5dp"
 	        android:layout_marginRight="5dp"
-	        android:layout_below="@+id/selectText"
+	        android:layout_below="@+id/refreshButton"
 	        android:layout_above="@+id/closePopup"
 	        android:divider="#ff505050"
 	        android:dividerHeight="1dp"

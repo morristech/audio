@@ -20,12 +20,10 @@
 #include <alljoyn/DBusStd.h>
 #include <alljoyn/AllJoynStd.h>
 #include "Constants.h"
-#include "LogHelper_Android.h"
 #include "MyAllJoynCode.h"
 
 /* Static data */
 static MyAllJoynCode* myAllJoynCode = NULL;
-static LogHelper* logger;
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,8 +40,7 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
 		JavaVM* vm;
 		env->GetJavaVM(&vm);
 		jobject gjobj = env->NewGlobalRef(jobj);
-		logger = new LogHelper_Android(vm, gjobj);
-		myAllJoynCode = new MyAllJoynCode(logger, vm, gjobj);
+		myAllJoynCode = new MyAllJoynCode(vm, gjobj);
 	}
 	jboolean iscopy;
 	const char* packageNameStr = env->GetStringUTFChars(packageNameStrObj, &iscopy);
@@ -151,6 +148,16 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
 	myAllJoynCode->Release();
 	delete myAllJoynCode;
 	myAllJoynCode = NULL;
+}
+
+/*
+ * Class:     org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer
+ * Method:    Release
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_RefreshSinks
+  (JNIEnv* env, jobject jobj) {
+	if(myAllJoynCode != NULL) myAllJoynCode->Refresh();
 }
 
 #ifdef __cplusplus

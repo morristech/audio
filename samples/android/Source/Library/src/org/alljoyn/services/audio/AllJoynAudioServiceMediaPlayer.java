@@ -28,7 +28,7 @@ import android.os.Message;
 import android.util.Log;
 
 public class AllJoynAudioServiceMediaPlayer extends MediaPlayer {
-	private static final String TAG = "AllJoynAudioMediaPlayer";
+	private static final String TAG = "AllJoynAudioServiceMediaPlayer";
 	
 	/* Handler used to make calls to AllJoyn methods. See onCreate(). */
     private Handler mBusHandler;
@@ -48,13 +48,14 @@ public class AllJoynAudioServiceMediaPlayer extends MediaPlayer {
 	private static final int STOP_STREAMING = 6;
 	private static final int CHANGE_VOLUME = 7;
 	private static final int MUTE_VOLUME = 8;
+	private static final int REFRESH_SINKS = 9;
 	private static final int RELEASE = -1;
 
 	/*
 	 * Native JNI methods
 	 */
 	static {
-		System.loadLibrary("easy_alljoyn_audio");
+		System.loadLibrary("easy_alljoyn_audio_service");
 	}
 
 	/**  */
@@ -89,6 +90,9 @@ public class AllJoynAudioServiceMediaPlayer extends MediaPlayer {
 
 	/**  */
 	private native void Release();
+	
+	/** */
+	private native void RefreshSinks();
     
     public AllJoynAudioServiceMediaPlayer() {
     	/* Make all AllJoyn calls through a separate handler thread to prevent blocking the UI. */
@@ -149,12 +153,8 @@ public class AllJoynAudioServiceMediaPlayer extends MediaPlayer {
     	mBusHandler.sendMessage(msg);
     }
     
-    public void stopAllJoynSinks() {
-    	
-    }
-    
-    public void stopAllJoynSink(String AllJoynSinkName) {
-    	
+    public void refreshSinks() {
+    	mBusHandler.sendEmptyMessage(REFRESH_SINKS);
     }
     
     @Override
@@ -165,6 +165,8 @@ public class AllJoynAudioServiceMediaPlayer extends MediaPlayer {
     	}
     	isPlayingOverStream = true;
     	mBusHandler.sendEmptyMessage(START_STREAMING);
+    	if(super.isPlaying())
+    		super.stop();
     }
     
     @Override
@@ -183,6 +185,13 @@ public class AllJoynAudioServiceMediaPlayer extends MediaPlayer {
     		super.stop();
     		return;
     	}
+    	isPlayingOverStream = false;
+    	mBusHandler.sendEmptyMessage(STOP_STREAMING);
+    }
+    
+    @Override
+    public void reset() {
+    	super.reset();
     	isPlayingOverStream = false;
     	mBusHandler.sendEmptyMessage(STOP_STREAMING);
     }
@@ -227,6 +236,7 @@ public class AllJoynAudioServiceMediaPlayer extends MediaPlayer {
     			Prepare("alljoyn.audio.streaming.IoE");
     			break;
     		case SET_DATA_SOURCE:
+    			Log.d(TAG, "Calling down to SetDataSource");
     			SetDataSource((String)msg.obj);
     			break;
     		case SET_ALLJOYN_SPEAKER:
@@ -254,17 +264,16 @@ public class AllJoynAudioServiceMediaPlayer extends MediaPlayer {
     		case RELEASE:
     			Release();
     			break;
+    		case REFRESH_SINKS:
+    			RefreshSinks();
+    			break;
     		default:
-    			LogToUI("DEFAULT CASE STATEMENT IN BUSHANDLER");
+    			Log.d(TAG,"DEFAULT CASE STATEMENT IN BUSHANDLER");
     			break;
     		}
     	}
     }
     
-    private void LogToUI(String msg) {
-		Log.d(TAG, msg);
-	}
-
 	private void SinkFound( String name, String path, short port ) {
 		if(mListener != null)
 			mListener.SinkFound(name, path, port);

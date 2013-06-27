@@ -29,11 +29,11 @@ static MyAllJoynCode* myAllJoynCode = NULL;
 extern "C" {
 #endif
 /*
- * Class:     Java_org_alljoyn_ioe_services_audiostreaming_player_jni_BusHandler_initialize
+ * Class:     Java_org_alljoyn_services_audio_sink_BusHandler_initialize
  * Method:    initialize
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_alljoyn_ioe_services_audiostreaming_player_jni_BusHandler_initialize(JNIEnv* env, jobject jobj, jstring packageNameStrObj) {
+JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_sink_BusHandler_initialize(JNIEnv* env, jobject jobj, jstring packageNameStrObj) {
     if (myAllJoynCode == NULL) {
         JavaVM* vm;
         env->GetJavaVM(&vm);
@@ -47,11 +47,11 @@ JNIEXPORT void JNICALL Java_org_alljoyn_ioe_services_audiostreaming_player_jni_B
 }
 
 /*
- * Class:     Java_org_alljoyn_ioe_services_audiostreaming_player_jni_BusHandler_shutdown
+ * Class:     Java_org_alljoyn_services_audio_sink_BusHandler_shutdown
  * Method:    shutdown
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_alljoyn_ioe_services_audiostreaming_player_jni_BusHandler_shutdown(JNIEnv* env, jobject jobj) {
+JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_sink_BusHandler_shutdown(JNIEnv* env, jobject jobj) {
     myAllJoynCode->shutdown();
     delete myAllJoynCode;
     myAllJoynCode = NULL;

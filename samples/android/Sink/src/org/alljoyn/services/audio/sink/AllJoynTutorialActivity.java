@@ -14,7 +14,7 @@
  *    limitations under the license.
  ******************************************************************************/
 
-package org.alljoyn.ioe.services.audiostreaming.player.jni;
+package org.alljoyn.services.audio.sink;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -25,7 +25,7 @@ public class AllJoynTutorialActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        Intent i = new Intent(getApplicationContext(), AllJoynAudioStreamingService.class);
+        Intent i = new Intent(getApplicationContext(), AllJoynAudioService.class);
 		startService(i);
 		finish();
     }    

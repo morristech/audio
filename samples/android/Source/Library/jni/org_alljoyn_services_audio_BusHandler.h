@@ -39,6 +39,8 @@ extern "C" {
 #define org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_MUTE 6L
 #undef org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_RELEASE
 #define org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_RELEASE 7L
+#undef org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_REFRESHSINKS
+#define org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_REFRESHSINKS 8L
 /*
  * Class:     org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer
  * Method:    Prepare
@@ -117,6 +119,14 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_Relase
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer
+ * Method:    RefreshSinks
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_RefreshSinks
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus

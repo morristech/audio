@@ -28,7 +28,7 @@
 #ifndef _CONSTANTS_
 #define _CONSTANTS_
 
-#define LOG_TAG  "IoEAudioStreamingPlayer"
+#define LOG_TAG  "AudioServiceSink"
 
 #ifndef LOGD
 #define LOGD(...) (__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__))

@@ -98,14 +98,7 @@ void MyAllJoynCode::initialize(const char* packageName) {
         char deviceFriendlyName[PROP_VALUE_MAX];
         __system_property_get("ro.product.board", deviceFriendlyName);
         LOGE("device friendly name: %s", deviceFriendlyName);
-        mAdvertisedName = mBusAttachment->GetUniqueName();        //String("org.example.Speaker-") + mBusAttachment->GetGlobalGUIDString();
-//		QStatus status = mBusAttachment->RequestName(mAdvertisedName.c_str(), DBUS_NAME_FLAG_DO_NOT_QUEUE);
-//		if (ER_OK != status) {
-//			LOGE("RequestName() failed");
-//			status = (status == ER_OK) ? ER_FAIL : status;
-//		} else {
-//			LOGE("Request Name was successful");
-//		}
+        mAdvertisedName = mBusAttachment->GetUniqueName();
 
         mAudioDevice = new AndroidDevice();
         SessionOpts opts(SessionOpts::TRAFFIC_MESSAGES, true, SessionOpts::PROXIMITY_ANY, TRANSPORT_ANY);

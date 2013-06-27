@@ -17,10 +17,8 @@
 package org.alljoyn.services.audio.android;
 
 import android.os.Bundle;
-import android.app.Activity;
-import android.app.Dialog;
+import android.content.pm.ActivityInfo;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +30,7 @@ public class SourceActivity extends FragmentActivity implements SinkSelectDialog
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.player);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         mUIHelper = new UIHelper(this);
         mUIHelper.init();
     }

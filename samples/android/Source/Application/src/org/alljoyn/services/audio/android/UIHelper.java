@@ -25,7 +25,11 @@ import org.alljoyn.services.audio.*;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.KeyEvent;
 import android.view.View;
@@ -37,10 +41,8 @@ import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class UIHelper {
-	
-	private static final int DIALOG_PICK_SPEAKERS = 1;
-
-    private Activity mActivity;
+    
+	private Activity mActivity;
     private static UIHelper instance;
     
     private AllJoynAudioServiceMediaPlayer mMediaPlayer;
@@ -72,7 +74,6 @@ public class UIHelper {
 
 			@Override
 			public void SinkLost(String speakerName) {
-				Utility.logStatus("Lost speaker: "+speakerName);
 				mSinkSelectDialog.RemoveSink(speakerName);
 			}
 
@@ -101,9 +102,11 @@ public class UIHelper {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				try {
+					boolean isPlaying = mMediaPlayer.isPlaying();
+					mMediaPlayer.reset();
 					mMediaPlayer.setDataSource(mSongFileList.get(position));
 					mShouldPrepare = true;
-					if(mMediaPlayer.isPlaying()) {
+					if(isPlaying) {
 						try{
 							mMediaPlayer.prepare();
 							mMediaPlayer.seekTo(0);
@@ -143,9 +146,6 @@ public class UIHelper {
 				} catch (IllegalStateException e) {
 					e.printStackTrace();
 				}
-//				catch (IOException e) {
-//					e.printStackTrace();
-//				}
 			}
     	});
     	
@@ -153,7 +153,11 @@ public class UIHelper {
     	mPauseButton.setOnClickListener(new OnClickListener() {
     		@Override
 			public void onClick(View arg0) {
-				mMediaPlayer.pause();
+    			try{
+    				mMediaPlayer.pause();
+    			}catch(Exception e) {
+    				e.printStackTrace();
+    			}
 			}
     	});
     	
@@ -161,7 +165,12 @@ public class UIHelper {
     	mStopButton.setOnClickListener(new OnClickListener() {
     		@Override
 			public void onClick(View arg0) {
-				mMediaPlayer.stop();
+    			try{
+					mMediaPlayer.stop();
+    			}catch(Exception e) {
+    				e.printStackTrace();
+    				mMediaPlayer.reset();
+    			}
 				mShouldPrepare = true;
 			}
     	});
@@ -170,7 +179,6 @@ public class UIHelper {
     	mSelectSinkButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				//mActivity.showDialog(DIALOG_PICK_SPEAKERS);
 				showSinkSelectDiaglog();
 			}
     	});
@@ -180,6 +188,10 @@ public class UIHelper {
     		@Override
     		public void onClick(View arg0) {
     			mMediaPlayer.setVolume(0, 0);
+    			if(mMuteSinksButton.getText().toString().startsWith("Mute"))
+    				mMuteSinksButton.setText("Unmute All Sinks");
+    			else
+    				mMuteSinksButton.setText("Mute All Sinks");
     		}
     	});
     }
@@ -219,7 +231,6 @@ public class UIHelper {
     }
     
     public void onDialogSinkDisable(String speakerName) {
-    	boolean isPlaying = mMediaPlayer.isPlaying();
 		mMediaPlayer.removeAllJoynSink(speakerName);
     }
     
@@ -247,6 +258,26 @@ public class UIHelper {
             mSongFileList.add(cursor.getString(1));
         }
         
+        if(songList.size() == 0) {
+        	mActivity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
+        			Uri.parse("file://"+ Environment.getExternalStorageDirectory()))); 
+        	AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mActivity);
+    		alertBuilder.setMessage("Please install wave files on device and then relaunch the application.");
+    		alertBuilder.setNegativeButton("Quit", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface arg0, int arg1) {
+					mActivity.finish();
+			    	android.os.Process.killProcess(android.os.Process.myPid());
+				}
+    		});
+    		alertBuilder.setCancelable(false);
+    		alertBuilder.create().show();
+        }
+        
         return songList.toArray(new String[songList.size()]);
+    }
+    
+    public static void refreshSinks() {
+    	instance.mMediaPlayer.refreshSinks();
     }
 }
