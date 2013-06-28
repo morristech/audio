@@ -33,19 +33,17 @@ extern "C" {
  * Method:    Prepare
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_Prepare
-  (JNIEnv* env, jobject jobj, jstring packageNameStrObj) {
-	if(myAllJoynCode == NULL)
-	{
-		JavaVM* vm;
-		env->GetJavaVM(&vm);
-		jobject gjobj = env->NewGlobalRef(jobj);
-		myAllJoynCode = new MyAllJoynCode(vm, gjobj);
-	}
-	jboolean iscopy;
-	const char* packageNameStr = env->GetStringUTFChars(packageNameStrObj, &iscopy);
-	myAllJoynCode->Prepare(packageNameStr);
-	env->ReleaseStringUTFChars(packageNameStrObj, packageNameStr);
+JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_Prepare(JNIEnv* env, jobject jobj, jstring packageNameStrObj) {
+    if (myAllJoynCode == NULL) {
+        JavaVM* vm;
+        env->GetJavaVM(&vm);
+        jobject gjobj = env->NewGlobalRef(jobj);
+        myAllJoynCode = new MyAllJoynCode(vm, gjobj);
+    }
+    jboolean iscopy;
+    const char* packageNameStr = env->GetStringUTFChars(packageNameStrObj, &iscopy);
+    myAllJoynCode->Prepare(packageNameStr);
+    env->ReleaseStringUTFChars(packageNameStrObj, packageNameStr);
 }
 
 /*
@@ -53,12 +51,11 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
  * Method:    SetDataSource
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_SetDataSource
-(JNIEnv* env, jobject jobj, jstring jPath) {
-	jboolean iscopy;
-	const char* path = env->GetStringUTFChars(jPath, &iscopy);
-	if(myAllJoynCode != NULL) myAllJoynCode->SetDataSource(path);
-	env->ReleaseStringUTFChars(jPath, path);
+JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_SetDataSource(JNIEnv* env, jobject jobj, jstring jPath) {
+    jboolean iscopy;
+    const char* path = env->GetStringUTFChars(jPath, &iscopy);
+    if (myAllJoynCode != NULL) myAllJoynCode->SetDataSource(path);
+    env->ReleaseStringUTFChars(jPath, path);
 }
 
 /*
@@ -66,14 +63,13 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
  * Method:    AddSink
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_AddSink
-(JNIEnv* env, jobject jobj, jstring jName, jstring jPath, jshort port) {
-	jboolean iscopy;
-	const char* name = env->GetStringUTFChars(jName, &iscopy);
-	const char* path = env->GetStringUTFChars(jPath, &iscopy);
-	if(myAllJoynCode != NULL) myAllJoynCode->AddSink(name, path, port);
-	env->ReleaseStringUTFChars(jName, name);
-	env->ReleaseStringUTFChars(jPath, path);
+JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_AddSink(JNIEnv* env, jobject jobj, jstring jName, jstring jPath, jshort port) {
+    jboolean iscopy;
+    const char* name = env->GetStringUTFChars(jName, &iscopy);
+    const char* path = env->GetStringUTFChars(jPath, &iscopy);
+    if (myAllJoynCode != NULL) myAllJoynCode->AddSink(name, path, port);
+    env->ReleaseStringUTFChars(jName, name);
+    env->ReleaseStringUTFChars(jPath, path);
 }
 
 /*
@@ -81,12 +77,11 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
  * Method:    RemoveSink
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_RemoveSink
-(JNIEnv* env, jobject jobj, jstring jName) {
-	jboolean iscopy;
-	const char* name = env->GetStringUTFChars(jName, &iscopy);
-	if(myAllJoynCode != NULL) myAllJoynCode->RemoveSink(name);
-	env->ReleaseStringUTFChars(jName, name);
+JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_RemoveSink(JNIEnv* env, jobject jobj, jstring jName) {
+    jboolean iscopy;
+    const char* name = env->GetStringUTFChars(jName, &iscopy);
+    if (myAllJoynCode != NULL) myAllJoynCode->RemoveSink(name);
+    env->ReleaseStringUTFChars(jName, name);
 }
 
 /*
@@ -94,9 +89,8 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
  * Method:    Start
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_Start
-(JNIEnv* env, jobject jobj) {
-	if(myAllJoynCode != NULL) myAllJoynCode->Start();
+JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_Start(JNIEnv* env, jobject jobj) {
+    if (myAllJoynCode != NULL) myAllJoynCode->Start();
 }
 
 /*
@@ -104,9 +98,8 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
  * Method:    Pause
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_Pause
-(JNIEnv* env, jobject jobj) {
-	if(myAllJoynCode != NULL) myAllJoynCode->Pause();
+JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_Pause(JNIEnv* env, jobject jobj) {
+    if (myAllJoynCode != NULL) myAllJoynCode->Pause();
 }
 
 /*
@@ -114,18 +107,16 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
  * Method:    Stop
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_Stop
-(JNIEnv* env, jobject jobj) {
-	if(myAllJoynCode != NULL) myAllJoynCode->Stop();
+JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_Stop(JNIEnv* env, jobject jobj) {
+    if (myAllJoynCode != NULL) myAllJoynCode->Stop();
 }
 /*
  * Class:     org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer
  * Method:    ChangeVolume
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_ChangeVolume
-(JNIEnv* env, jobject jobj, jfloat value) {
-	if(myAllJoynCode != NULL) myAllJoynCode->ChangeVolume(value);
+JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_ChangeVolume(JNIEnv* env, jobject jobj, jfloat value) {
+    if (myAllJoynCode != NULL) myAllJoynCode->ChangeVolume(value);
 }
 
 /*
@@ -133,9 +124,8 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
  * Method:    Mute
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_Mute
-(JNIEnv* env, jobject jobj) {
-	if(myAllJoynCode != NULL) myAllJoynCode->Mute();
+JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_Mute(JNIEnv* env, jobject jobj) {
+    if (myAllJoynCode != NULL) myAllJoynCode->Mute();
 }
 
 /*
@@ -143,11 +133,10 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
  * Method:    Release
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_Release
-  (JNIEnv* env, jobject jobj) {
-	myAllJoynCode->Release();
-	delete myAllJoynCode;
-	myAllJoynCode = NULL;
+JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_Release(JNIEnv* env, jobject jobj) {
+    myAllJoynCode->Release();
+    delete myAllJoynCode;
+    myAllJoynCode = NULL;
 }
 
 /*
@@ -155,9 +144,8 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
  * Method:    Release
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_RefreshSinks
-  (JNIEnv* env, jobject jobj) {
-	if(myAllJoynCode != NULL) myAllJoynCode->Refresh();
+JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_RefreshSinks(JNIEnv* env, jobject jobj) {
+    if (myAllJoynCode != NULL) myAllJoynCode->Refresh();
 }
 
 #ifdef __cplusplus

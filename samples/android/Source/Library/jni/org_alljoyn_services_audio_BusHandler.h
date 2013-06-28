@@ -47,7 +47,7 @@ extern "C" {
  * Signature: (Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_Prepare
-  (JNIEnv *, jobject, jstring);
+    (JNIEnv *, jobject, jstring);
 
 /*
  * Class:     org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer
@@ -55,7 +55,7 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
  * Signature: (Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_SetDataSource
-  (JNIEnv *, jobject, jstring);
+    (JNIEnv *, jobject, jstring);
 
 /*
  * Class:     org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer
@@ -63,7 +63,7 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
  * Signature: (Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_AddSink
-  (JNIEnv *, jobject, jstring, jstring, jshort);
+    (JNIEnv *, jobject, jstring, jstring, jshort);
 
 /*
  * Class:     org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer
@@ -71,7 +71,7 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
  * Signature: (Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_RemoveSink
-  (JNIEnv *, jobject, jstring);
+    (JNIEnv *, jobject, jstring);
 
 /*
  * Class:     org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer
@@ -79,7 +79,7 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_Start
-  (JNIEnv *, jobject);
+    (JNIEnv *, jobject);
 
 /*
  * Class:     org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer
@@ -87,7 +87,7 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_Pause
-(JNIEnv *, jobject);
+    (JNIEnv *, jobject);
 
 /*
  * Class:     org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer
@@ -95,7 +95,7 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_Stop
-(JNIEnv *, jobject);
+    (JNIEnv *, jobject);
 
 /*
  * Class:     org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer
@@ -103,7 +103,7 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
  * Signature: (F)V
  */
 JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_ChangeVolume
-  (JNIEnv *, jobject, jfloat);
+    (JNIEnv *, jobject, jfloat);
 
 /*
  * Class:     org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer
@@ -111,7 +111,7 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_Mute
-  (JNIEnv *, jobject);
+    (JNIEnv *, jobject);
 
 /*
  * Class:     org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer
@@ -119,7 +119,7 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_Relase
-  (JNIEnv *, jobject);
+    (JNIEnv *, jobject);
 
 /*
  * Class:     org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer
@@ -127,7 +127,7 @@ JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaP
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_org_alljoyn_services_audio_AllJoynAudioServiceMediaPlayer_RefreshSinks
-  (JNIEnv *, jobject);
+    (JNIEnv *, jobject);
 
 #ifdef __cplusplus
 }

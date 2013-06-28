@@ -109,7 +109,7 @@ void SinkSearcher::OnAnnounce(const InterfaceDescription::Member* member, const 
      * Refresh below.
      *
      * Note also that we have to be careful here when calling FindAdvertisedName.  If it blocks
-     * then we could run out of "concurrency" threads if we get flooded with OnAnnounce calls 
+     * then we could run out of "concurrency" threads if we get flooded with OnAnnounce calls
      * before FindAdvertisedName returns.  Call it asynchronously to avoid this problem.
      */
     status = FindAdvertisedNameAsync(serviceName);
@@ -120,7 +120,7 @@ void SinkSearcher::OnAnnounce(const InterfaceDescription::Member* member, const 
 QStatus SinkSearcher::FindAdvertisedNameAsync(const char* namePrefix) {
     MsgArg arg("s", namePrefix);
     const ProxyBusObject& alljoynObj = mBus->GetAllJoynProxyObj();
-    return alljoynObj.MethodCallAsync(org::alljoyn::Bus::InterfaceName, "FindAdvertisedName", 
+    return alljoynObj.MethodCallAsync(org::alljoyn::Bus::InterfaceName, "FindAdvertisedName",
                                       this, static_cast<MessageReceiver::ReplyHandler>(&SinkSearcher::FindAdvertisedNameAsyncCB),
                                       &arg, 1);
 }
@@ -136,13 +136,13 @@ void SinkSearcher::FindAdvertisedNameAsyncCB(Message& message, void* context) {
                 break;
 
             default:
-                QCC_LogError(ER_BUS_UNEXPECTED_DISPOSITION, ("%s.FindAdvertisedName returned %d", 
+                QCC_LogError(ER_BUS_UNEXPECTED_DISPOSITION, ("%s.FindAdvertisedName returned %d",
                                                              org::alljoyn::Bus::InterfaceName, disposition));
                 break;
             }
         }
     } else if (message->GetType() == MESSAGE_ERROR) {
-        QCC_LogError(status, ("%s.FindAdvertisedName returned ERROR_MESSAGE (error=%s)", 
+        QCC_LogError(status, ("%s.FindAdvertisedName returned ERROR_MESSAGE (error=%s)",
                               org::alljoyn::Bus::InterfaceName, message->GetErrorDescription().c_str()));
     }
 }
