@@ -17,6 +17,7 @@
 package org.alljoyn.services.audio.android;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.alljoyn.services.audio.android.SinkSelectDialog.SinkSelectDialogListener;
 
@@ -35,18 +36,17 @@ public class SinkListAdapter extends ArrayAdapter<Object> {
 
 	private Activity mActivity;
 	private static ArrayList<Object> mList = new ArrayList<Object>(); 
+	private static HashMap<String, Boolean> mCheckedList = new HashMap<String, Boolean>();
 
 	class SessionInfoHolder{
 		public String name;
 		public String path;
 		public short port;
-		public boolean isChecked;
 
 		public SessionInfoHolder(String name, String path, short port){
 			this.name = name;
 			this.path = path;
 			this.port = port;
-			isChecked = false;
 		}
 	}
 	
@@ -68,6 +68,8 @@ public class SinkListAdapter extends ArrayAdapter<Object> {
 	public void add(String name, String path, short port) {
 		if(-1 == foundLoc(name)) {
 			mList.add(new SessionInfoHolder(name, path, port));
+			if(!mCheckedList.containsKey(name))
+				mCheckedList.put(name, Boolean.FALSE);
 			if(mActivity != null) {
 				mActivity.runOnUiThread(new Runnable() {
 					public void run() {
@@ -82,6 +84,7 @@ public class SinkListAdapter extends ArrayAdapter<Object> {
 		int foundLoc = foundLoc(name);
 		if(-1 != foundLoc) {
 			mList.remove(foundLoc);
+			mCheckedList.remove(name);
 			if(mActivity != null) {
 				mActivity.runOnUiThread(new Runnable() {
 					public void run() {
@@ -120,7 +123,8 @@ public class SinkListAdapter extends ArrayAdapter<Object> {
 	}
 	
 	public void toggleSelected(int pos) {
-		((SessionInfoHolder)mList.get(pos)).isChecked = true;
+		SessionInfoHolder info = (SessionInfoHolder)mList.get(pos);
+		mCheckedList.put(info.name, Boolean.TRUE);
 		if(mActivity != null) {
 			mActivity.runOnUiThread(new Runnable() {
 				public void run() {
@@ -157,20 +161,21 @@ public class SinkListAdapter extends ArrayAdapter<Object> {
 			convertView = inflater.inflate(R.layout.genericitem, parent, false);
 	
 			final CheckBox cb = (CheckBox) convertView.findViewById(R.id.itemCheckbox);
-			cb.setChecked(info.isChecked);
+			cb.setChecked(mCheckedList.get(info.name) == Boolean.TRUE);
 			final int loc = position;
 			cb.setOnClickListener(new OnClickListener() {
 				public void onClick(View arg0) {
-					((SessionInfoHolder)mList.get(loc)).isChecked = !((SessionInfoHolder)mList.get(loc)).isChecked;
+					SessionInfoHolder info = (SessionInfoHolder)mList.get(loc);
+					mCheckedList.put(info.name, !mCheckedList.get(info.name));
 					try {
-						if(((SessionInfoHolder)mList.get(loc)).isChecked) {
+						if(mCheckedList.get(info.name)) {
 							((SinkSelectDialogListener)mActivity).onDialogSinkEnable(getName(loc), getPath(loc), getPort(loc));
 						} else {
 							((SinkSelectDialogListener)mActivity).onDialogSinkDisable(getName(loc));
 						}
 					}catch(Exception e) {
 						((CheckBox)arg0).setChecked(false);
-						((SessionInfoHolder)mList.get(loc)).isChecked = false;
+						mCheckedList.put(info.name, Boolean.FALSE);
 						AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mActivity);
 			    		alertBuilder.setMessage("You must select a song prior to enabling speakers.\nException: "+e.getMessage()+".");
 			    		alertBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {

@@ -49,12 +49,13 @@
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.android.AndroidPerProjectProfile"/>
 		</scannerConfigBuildInfo>
 	</storageModule>
+	<storageModule moduleId="refreshScope"/>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 		<buildTargets>
-			<target name="easy_alljoyn_audio" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+			<target name="easy_alljoyn_audio_service" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>ndk-build</buildCommand>
 				<buildArguments/>
-				<buildTarget>easy_alljoyn_audio</buildTarget>
+				<buildTarget>easy_alljoyn_audio_service</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>true</runAllBuilders>

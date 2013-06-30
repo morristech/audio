@@ -28,6 +28,7 @@ import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -56,6 +57,7 @@ public class UIHelper {
     private Button mSelectSinkButton;
     private Button mMuteSinksButton;
     private float volume = 1.0F;
+    private View mPrevSelectedSong = null;
     
     public UIHelper(Activity activity) {
     	instance = this;
@@ -101,6 +103,11 @@ public class UIHelper {
     	songListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				if(mPrevSelectedSong != null)
+					mPrevSelectedSong.setBackgroundColor(Color.TRANSPARENT);
+				view.setSelected(true);
+				view.setBackgroundColor(Color.parseColor("#99555555"));
+				mPrevSelectedSong = view;
 				try {
 					boolean isPlaying = mMediaPlayer.isPlaying();
 					mMediaPlayer.reset();
@@ -142,6 +149,7 @@ public class UIHelper {
 						}
 					}
 					mShouldPrepare = false;
+					System.out.println("Going to call start again: "+mMediaPlayer.isPlaying());
 					mMediaPlayer.start();
 				} catch (IllegalStateException e) {
 					e.printStackTrace();

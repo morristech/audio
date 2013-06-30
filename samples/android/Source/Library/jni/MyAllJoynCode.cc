@@ -97,11 +97,12 @@ void MyAllJoynCode::RemoveSink(const char*name)
 
 void MyAllJoynCode::Start()
 {
+    if(mSinkPlayer->IsPlaying())
+    	Stop();
     if (wasStopped)
         mSinkPlayer->OpenAllSinks();
     wasStopped = false;
-    if (!mSinkPlayer->IsPlaying())
-        mSinkPlayer->Play();
+    mSinkPlayer->Play();
 }
 
 void MyAllJoynCode::Pause()
